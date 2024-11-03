@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지 브라우징 페이지</title>
+    <style>
+        /* 이미지 그리드 스타일 */
+        .image-grid { display: flex; flex-wrap: wrap; }
+        .image-item { margin: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>이미지 갤러리</h1>
+    <div id="imageGrid" class="image-grid"></div>
+    <script>
+        fetch('/api/images')
+            .then(response => response.json())
+            .then(images => {
+                const grid = document.getElementById('imageGrid');
+                images.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = image.url;
+                    imgElement.classList.add('image-item');
+                    imgElement.onclick = () => addToCart(image.id);
+                    grid.appendChild(imgElement);
+                });
+            });
+        function addToCart(imageId) {
+            fetch('/api/cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ imageId })
+            }).then(response => {
+                if(response.ok) alert("카트에 추가되었습니다.");
+            });
+        }
+    </script>
+</body>
+</html>
+        
